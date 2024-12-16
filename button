@@ -727,3 +727,156 @@ public class PatientRegistrationView {
         contactField.setText("");      
     }
 }
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import com.toedter.calendar.JDateChooser;
+import java.awt.*;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.Date;
+
+public class PatientRegistrationView {
+    public JFrame frame;
+    public JTextField firstNameField, lastNameField, addressLine1Field, addressLine2Field, addressLine3Field, 
+            emailField, contactField, ageField, pincodeField, emergencyNameField, emergencyPhoneField;
+    public JDateChooser dobChooser;
+    public JComboBox<String> sexCombo, maritalStatusCombo, bloodGroupCombo, stateComboBox;
+    public JButton registerButton, viewPatientsButton;
+
+    public PatientRegistrationView() {
+        // Main Frame
+        frame = new JFrame("Hospital Information System - Patient Registration");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(850, 750);
+        frame.setLayout(new BorderLayout());
+        
+        // Main Panel
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(Color.decode("#E3F2FD"));
+        
+        // Personal Information Section
+        JPanel personalInfoPanel = createSectionPanel("Personal Information");
+        GridBagConstraints gbc = new GridBagConstraints();
+        personalInfoPanel.setLayout(new GridBagLayout());
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Personal Information Fields
+        firstNameField = new JTextField(15);
+        lastNameField = new JTextField(15);
+        dobChooser = new JDateChooser();
+        dobChooser.setPreferredSize(new Dimension(170, dobChooser.getPreferredSize().height));
+        ageField = new JTextField(15);
+        ageField.setEditable(false);
+        sexCombo = new JComboBox<>(new String[]{"Male", "Female", "Other"});
+        maritalStatusCombo = new JComboBox<>(new String[]{"Single", "Married", "Divorced", "Widowed"});
+        bloodGroupCombo = new JComboBox<>(new String[]{"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"});
+        
+        // Add Personal Info Fields
+        addFieldToPanel(personalInfoPanel, gbc, "First Name:", firstNameField, 0);
+        addFieldToPanel(personalInfoPanel, gbc, "Last Name:", lastNameField, 1);
+        addFieldToPanel(personalInfoPanel, gbc, "Date of Birth:", dobChooser, 2);
+        addFieldToPanel(personalInfoPanel, gbc, "Age:", ageField, 3);
+        addFieldToPanel(personalInfoPanel, gbc, "Sex:", sexCombo, 4);
+        addFieldToPanel(personalInfoPanel, gbc, "Marital Status:", maritalStatusCombo, 5);
+        addFieldToPanel(personalInfoPanel, gbc, "Blood Group:", bloodGroupCombo, 6);
+
+        // Contact Information Section
+        JPanel contactInfoPanel = createSectionPanel("Contact Information");
+        contactInfoPanel.setLayout(new GridBagLayout());
+        emailField = new JTextField(15);
+        contactField = new JTextField(15);
+        addressLine1Field = new JTextField(15);
+        addressLine2Field = new JTextField(15);
+        addressLine3Field = new JTextField(15);
+        pincodeField = new JTextField(15);
+        String[] states = {"Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
+                "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", 
+                "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"};
+        stateComboBox = new JComboBox<>(states);
+
+        // Add Contact Info Fields
+        addFieldToPanel(contactInfoPanel, gbc, "Email:", emailField, 0);
+        addFieldToPanel(contactInfoPanel, gbc, "Contact Number:", contactField, 1);
+        addFieldToPanel(contactInfoPanel, gbc, "Address Line 1:", addressLine1Field, 2);
+        addFieldToPanel(contactInfoPanel, gbc, "Address Line 2:", addressLine2Field, 3);
+        addFieldToPanel(contactInfoPanel, gbc, "Address Line 3:", addressLine3Field, 4);
+        addFieldToPanel(contactInfoPanel, gbc, "Pin Code:", pincodeField, 5);
+        addFieldToPanel(contactInfoPanel, gbc, "State:", stateComboBox, 6);
+
+        // Emergency Contact Section
+        JPanel emergencyContactPanel = createSectionPanel("Emergency Contact Information");
+        emergencyContactPanel.setLayout(new GridBagLayout());
+        emergencyNameField = new JTextField(15);
+        emergencyPhoneField = new JTextField(15);
+
+        // Add Emergency Contact Fields
+        addFieldToPanel(emergencyContactPanel, gbc, "Emergency Contact Name:", emergencyNameField, 0);
+        addFieldToPanel(emergencyContactPanel, gbc, "Emergency Contact Phone:", emergencyPhoneField, 1);
+
+        // Bottom Buttons
+        JPanel bottomPanel = new JPanel(new FlowLayout());
+        bottomPanel.setBackground(Color.decode("#BBDEFB"));
+        registerButton = new JButton("Register");
+        viewPatientsButton = new JButton("View Patients");
+        bottomPanel.add(registerButton);
+        bottomPanel.add(viewPatientsButton);
+
+        // Add Sections to Main Panel
+        mainPanel.add(personalInfoPanel);
+        mainPanel.add(contactInfoPanel);
+        mainPanel.add(emergencyContactPanel);
+        frame.add(mainPanel, BorderLayout.CENTER);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
+
+        // Auto-Calculate Age
+        dobChooser.addPropertyChangeListener(e -> {
+            if ("date".equals(e.getPropertyName())) {
+                LocalDate dob = dobChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                int age = Period.between(dob, LocalDate.now()).getYears();
+                ageField.setText(String.valueOf(age));
+            }
+        });
+
+        frame.setVisible(true);
+    }
+
+    // Helper Method to Create Section Panel
+    private JPanel createSectionPanel(String title) {
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.decode("#64B5F6")),
+                title, TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.BOLD, 14), Color.decode("#1565C0")));
+        panel.setBackground(Color.WHITE);
+        return panel;
+    }
+
+    // Helper Method to Add Field to Panel
+    private void addFieldToPanel(JPanel panel, GridBagConstraints gbc, String label, JComponent field, int row) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        panel.add(new JLabel(label), gbc);
+        gbc.gridx = 1;
+        panel.add(field, gbc);
+    }
+
+    public void resetFields() {
+        firstNameField.setText("");
+        lastNameField.setText("");
+        dobChooser.setDate(new Date());
+        ageField.setText("");
+        sexCombo.setSelectedIndex(0);
+        maritalStatusCombo.setSelectedIndex(0);
+        bloodGroupCombo.setSelectedIndex(0);
+        emailField.setText("");
+        contactField.setText("");
+        addressLine1Field.setText("");
+        addressLine2Field.setText("");
+        addressLine3Field.setText("");
+        pincodeField.setText("");
+        stateComboBox.setSelectedIndex(0);
+        emergencyNameField.setText("");
+        emergencyPhoneField.setText("");
+    }
+}
