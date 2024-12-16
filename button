@@ -1,3 +1,229 @@
+import javax.swing.*;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+
+public class PatientRegistrationView {
+    public JFrame frame;
+    public JTextField firstNameField, lastNameField, addressLine1Field, addressLine2Field, addressLine3Field,
+            emailField, contactField, ageField, pincodeField, emergencyNameField, emergencyContactField;
+    public JDateChooser dobChooser;
+    public JComboBox<String> sexCombo, maritalStatusCombo, bloodGroupCombo, stateComboBox;
+    public JButton registerButton, viewPatientsButton;
+
+    public PatientRegistrationView() {
+        frame = new JFrame("Hospital Information System - Patient Registration");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 800);
+        frame.setLayout(new BorderLayout());
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        mainPanel.setBackground(Color.WHITE); // Set background color to white
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Panel for Personal Information
+        JPanel personalInfoPanel = new JPanel(new GridBagLayout());
+        personalInfoPanel.setBackground(Color.decode("#E3F2FD")); // Light blue background
+        personalInfoPanel.setBorder(BorderFactory.createTitledBorder("Personal Information"));
+
+        // Personal Information Fields
+        firstNameField = new JTextField(15);
+        lastNameField = new JTextField(15);
+        dobChooser = new JDateChooser();
+        dobChooser.setPreferredSize(new Dimension(170, dobChooser.getPreferredSize().height));
+        ageField = new JTextField(15);
+        ageField.setEditable(false);
+        sexCombo = new JComboBox<>(new String[]{"Male", "Female", "Other"});
+        maritalStatusCombo = new JComboBox<>(new String[]{"Single", "Married", "Divorced", "Widowed"});
+        bloodGroupCombo = new JComboBox<>(new String[]{"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"});
+
+        // Add fields to Personal Information panel
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        personalInfoPanel.add(new JLabel("First Name:"), gbc);
+        gbc.gridx = 1;
+        personalInfoPanel.add(firstNameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        personalInfoPanel.add(new JLabel("Last Name:"), gbc);
+        gbc.gridx = 1;
+        personalInfoPanel.add(lastNameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        personalInfoPanel.add(new JLabel("Date of Birth:"), gbc);
+        gbc.gridx = 1;
+        personalInfoPanel.add(dobChooser, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        personalInfoPanel.add(new JLabel("Age:"), gbc);
+        gbc.gridx = 1;
+        personalInfoPanel.add(ageField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        personalInfoPanel.add(new JLabel("Sex:"), gbc);
+        gbc.gridx = 1;
+        personalInfoPanel.add(sexCombo, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        personalInfoPanel.add(new JLabel("Marital Status:"), gbc);
+        gbc.gridx = 1;
+        personalInfoPanel.add(maritalStatusCombo, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        personalInfoPanel.add(new JLabel("Blood Group:"), gbc);
+        gbc.gridx = 1;
+        personalInfoPanel.add(bloodGroupCombo, gbc);
+
+        // Panel for Contact Information
+        JPanel contactInfoPanel = new JPanel(new GridBagLayout());
+        contactInfoPanel.setBackground(Color.decode("#E3F2FD")); // Light blue background
+        contactInfoPanel.setBorder(BorderFactory.createTitledBorder("Contact Information"));
+
+        addressLine1Field = new JTextField(15);
+        addressLine2Field = new JTextField(15);
+        addressLine3Field = new JTextField(15);
+        pincodeField = new JTextField(15);
+        emailField = new JTextField(15);
+        contactField = new JTextField(15);
+
+        String[] states = {"Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
+                "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
+                "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+                "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"};
+        stateComboBox = new JComboBox<>(states);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        contactInfoPanel.add(new JLabel("Email:"), gbc);
+        gbc.gridx = 1;
+        contactInfoPanel.add(emailField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        contactInfoPanel.add(new JLabel("Contact Number:"), gbc);
+        gbc.gridx = 1;
+        contactInfoPanel.add(contactField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        contactInfoPanel.add(new JLabel("Address Line 1:"), gbc);
+        gbc.gridx = 1;
+        contactInfoPanel.add(addressLine1Field, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        contactInfoPanel.add(new JLabel("Address Line 2:"), gbc);
+        gbc.gridx = 1;
+        contactInfoPanel.add(addressLine2Field, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        contactInfoPanel.add(new JLabel("Address Line 3:"), gbc);
+        gbc.gridx = 1;
+        contactInfoPanel.add(addressLine3Field, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        contactInfoPanel.add(new JLabel("Pincode:"), gbc);
+        gbc.gridx = 1;
+        contactInfoPanel.add(pincodeField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        contactInfoPanel.add(new JLabel("State:"), gbc);
+        gbc.gridx = 1;
+        contactInfoPanel.add(stateComboBox, gbc);
+
+        // Panel for Emergency Contact
+        JPanel emergencyContactPanel = new JPanel(new GridBagLayout());
+        emergencyContactPanel.setBackground(Color.decode("#E3F2FD")); // Light blue background
+        emergencyContactPanel.setBorder(BorderFactory.createTitledBorder("Emergency Contact"));
+
+        emergencyNameField = new JTextField(15);
+        emergencyContactField = new JTextField(15);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        emergencyContactPanel.add(new JLabel("Name:"), gbc);
+        gbc.gridx = 1;
+        emergencyContactPanel.add(emergencyNameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        emergencyContactPanel.add(new JLabel("Phone Number:"), gbc);
+        gbc.gridx = 1;
+        emergencyContactPanel.add(emergencyContactField, gbc);
+
+        // Buttons Panel
+        JPanel bottomPanel = new JPanel(new FlowLayout());
+        bottomPanel.setBackground(Color.WHITE);
+        registerButton = new JButton("Register");
+        viewPatientsButton = new JButton("View Patients");
+        bottomPanel.add(registerButton);
+        bottomPanel.add(viewPatientsButton);
+
+        // Add panels to main panel
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainPanel.add(personalInfoPanel, gbc);
+
+        gbc.gridy = 1;
+        mainPanel.add(contactInfoPanel, gbc);
+
+        gbc.gridy = 2;
+        mainPanel.add(emergencyContactPanel, gbc);
+
+        frame.add(mainPanel, BorderLayout.CENTER);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
+
+        // Automatically calculate age from Date of Birth
+        dobChooser.addPropertyChangeListener(e -> {
+            if ("date".equals(e.getPropertyName())) {
+                LocalDate dob = dobChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                int age = Period.between(dob, LocalDate.now()).getYears();
+                ageField.setText(String.valueOf(age));
+            }
+        });
+
+        frame.setVisible(true);
+    }
+
+    public void resetFields() {
+        firstNameField.setText("");
+        lastNameField.setText("");
+        dobChooser.setDate(null);
+        ageField.setText("");
+        sexCombo.setSelectedIndex(0);
+        maritalStatusCombo.setSelectedIndex(0);
+        addressLine1Field.setText("");
+        addressLine2Field.setText("");
+        addressLine3Field.setText("");
+        pincodeField.setText("");
+        stateComboBox.setSelectedIndex(0);
+        emailField.setText("");
+        bloodGroupCombo.setSelectedIndex(0);
+        contactField.setText("");
+        emergencyNameField.setText("");
+        emergencyContactField.setText("");
+    }
+
+    public static void main(String[] args) {
+        new PatientRegistrationView();
+    }
+}
 class ButtonEditor extends DefaultCellEditor {
     private JButton button;
     private PatientTableView tableView;
