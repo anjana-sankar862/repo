@@ -24,3 +24,162 @@ class ButtonEditor extends DefaultCellEditor {
         return button;
     }
 }
+class ButtonRenderer extends JButton implements TableCellRenderer {
+    public ButtonRenderer() {
+        setText("Update");
+    }
+
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                   boolean hasFocus, int row, int column) {
+        return this;
+    }
+}
+public class PatientUpdateView extends JFrame {
+    private JTextField firstNameField, lastNameField, emailField, contactField, addressField, pincodeField;
+    private JComboBox<String> sexCombo, maritalStatusCombo, bloodGroupCombo, stateComboBox;
+    private JDateChooser dobChooser;
+    private JButton updateButton;
+    private Patient patient;
+    private PatientTableView tableView;
+
+    public PatientUpdateView(Patient patient, PatientTableView tableView) {
+        this.patient = patient;
+        this.tableView = tableView;
+
+        setTitle("Update Patient Details");
+        setSize(600, 500);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Initialize components
+        firstNameField = new JTextField(patient.getFirstName(), 15);
+        lastNameField = new JTextField(patient.getLastName(), 15);
+        dobChooser = new JDateChooser();
+        dobChooser.setDate(Date.from(patient.getDob().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        emailField = new JTextField(patient.getEmail(), 15);
+        contactField = new JTextField(String.valueOf(patient.getPhoneNumber()), 15);
+        addressField = new JTextField(patient.getAddress(), 15);
+        pincodeField = new JTextField(patient.getPincode(), 15);
+
+        sexCombo = new JComboBox<>(new String[]{"Male", "Female", "Other"});
+        sexCombo.setSelectedItem(patient.getSex());
+
+        maritalStatusCombo = new JComboBox<>(new String[]{"Single", "Married", "Divorced", "Widowed"});
+        maritalStatusCombo.setSelectedItem(patient.getMaritalStatus());
+
+        bloodGroupCombo = new JComboBox<>(new String[]{"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"});
+        bloodGroupCombo.setSelectedItem(patient.getBloodGroup());
+
+        stateComboBox = new JComboBox<>(new String[]{"Andhra Pradesh", "Arunachal Pradesh", /* other states */});
+        stateComboBox.setSelectedItem(patient.getState());
+
+        updateButton = new JButton("Update");
+
+        // Layout
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(new JLabel("First Name:"), gbc);
+        gbc.gridx = 1;
+        add(firstNameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        add(new JLabel("Last Name:"), gbc);
+        gbc.gridx = 1;
+        add(lastNameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(new JLabel("DOB:"), gbc);
+        gbc.gridx = 1;
+        add(dobChooser, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        add(new JLabel("Email:"), gbc);
+        gbc.gridx = 1;
+        add(emailField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        add(new JLabel("Contact:"), gbc);
+        gbc.gridx = 1;
+        add(contactField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        add(new JLabel("Address:"), gbc);
+        gbc.gridx = 1;
+        add(addressField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        add(new JLabel("Pincode:"), gbc);
+        gbc.gridx = 1;
+        add(pincodeField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        add(new JLabel("State:"), gbc);
+        gbc.gridx = 1;
+        add(stateComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 8;
+        add(new JLabel("Sex:"), gbc);
+        gbc.gridx = 1;
+        add(sexCombo, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 9;
+        add(new JLabel("Marital Status:"), gbc);
+        gbc.gridx = 1;
+        add(maritalStatusCombo, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 10;
+        add(new JLabel("Blood Group:"), gbc);
+        gbc.gridx = 1;
+        add(bloodGroupCombo, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 11;
+        add(updateButton, gbc);
+
+        // Update Button Action
+        updateButton.addActionListener(e -> {
+            try {
+                patient.setFirstName(firstNameField.getText());
+                patient.setLastName(lastNameField.getText());
+                patient.setDob(dobChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+                patient.setEmail(emailField.getText());
+                patient.setPhoneNumber(Long.parseLong(contactField.getText()));
+                patient.setAddress(addressField.getText());
+                patient.setPincode(pincodeField.getText());
+                patient.setState((String) stateComboBox.getSelectedItem());
+                patient.setSex((String) sexCombo.getSelectedItem());
+                patient.setMaritalStatus((String) maritalStatusCombo.getSelectedItem());
+                patient.setBloodGroup((String) bloodGroupCombo.getSelectedItem());
+
+                // Update in JSON and refresh table
+                JsonHandler jsonHandler = new JsonHandler();
+                jsonHandler.updatePatient(patient);
+                tableView.updateTable(jsonHandler.readPatients());
+
+                JOptionPane.showMessageDialog(this, "Patient details updated successfully!");
+                dispose();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+            }
+        });
+
+        setVisible(true);
+    }
+}
+
+
