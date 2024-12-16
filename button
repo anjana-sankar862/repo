@@ -293,3 +293,211 @@ public class WelcomePage {
         });
     }
 }
+public class PatientRegistrationView {
+    public JFrame frame;
+    public JTextField firstNameField, lastNameField, addressLine1Field, addressLine2Field, addressLine3Field, 
+            emailField, contactField, ageField, pincodeField, stateField;
+    public JDateChooser dobChooser;
+    public JComboBox<String> sexCombo, maritalStatusCombo, bloodGroupCombo,stateComboBox;
+    public JButton registerButton, viewPatientsButton;
+
+    public PatientRegistrationView() {
+        frame = new JFrame("Hospital Information System - Patient Registration");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 700);
+        frame.setLayout(new BorderLayout());
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        mainPanel.setBorder(BorderFactory.createTitledBorder("Register a New Patient"));
+       // mainPanel.setBackground(Color.decode("#E3F2FD"));
+         JsonHandler.readPatients();
+
+        
+        firstNameField = new JTextField(15);
+        lastNameField = new JTextField(15);
+        dobChooser = new JDateChooser();
+        dobChooser.setPreferredSize(new Dimension(170, dobChooser.getPreferredSize().height));
+        ageField = new JTextField(15);
+        ageField.setEditable(false);
+
+        addressLine1Field = new JTextField(15);
+        addressLine2Field = new JTextField(15);
+        addressLine3Field = new JTextField(15);
+        pincodeField = new JTextField(15);
+        
+       
+        
+
+        emailField = new JTextField(15);
+        contactField = new JTextField(15);
+
+        sexCombo = new JComboBox<>(new String[]{"Male", "Female", "Other"});
+        sexCombo.setPreferredSize(new Dimension(170,30));
+        maritalStatusCombo = new JComboBox<>(new String[]{"Single", "Married", "Divorced", "Widowed"});
+        maritalStatusCombo.setPreferredSize(new Dimension(170,30));
+        bloodGroupCombo = new JComboBox<>(new String[]{"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"});
+        bloodGroupCombo.setPreferredSize(new Dimension(170, 30));
+        String[]states= {"Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal"};
+        stateComboBox=new JComboBox<>(states);
+        stateComboBox.setPreferredSize(new Dimension(170,30));
+        
+        
+
+        registerButton = new JButton("Register");
+        viewPatientsButton = new JButton("View Patients");
+        
+        //registerButton.setBackground(Color.decode("#FFFFFF"));
+       // frame.getContentPane().setBackground(Color.decode("#F0F7F4"));
+       // registerButton.setForeground(Color.decode("#1A237E"));
+        //viewPatientsButton.setForeground(Color.decode("#424242"));
+
+        
+        gbc.insets = new Insets(5, 5, 5, 5); 
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // First Name
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainPanel.add(new JLabel("First Name:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(firstNameField, gbc);
+
+        // Last Name
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        mainPanel.add(new JLabel("Last Name:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(lastNameField, gbc);
+
+        // Date of Birth
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        mainPanel.add(new JLabel("Date of Birth:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(dobChooser, gbc);
+
+        // Age
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        mainPanel.add(new JLabel("Age:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(ageField, gbc);
+
+        // Sex
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        mainPanel.add(new JLabel("Sex:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(sexCombo, gbc);
+
+        // Marital Status
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        mainPanel.add(new JLabel("Marital Status:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(maritalStatusCombo, gbc);
+
+        //bloodgroup
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        mainPanel.add(new JLabel("Blood Group:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(bloodGroupCombo, gbc);
+        
+        
+
+        //email
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        mainPanel.add(new JLabel("Email:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(emailField, gbc);
+
+        //Contact  num
+        gbc.gridx = 0;
+        gbc.gridy = 8;
+        mainPanel.add(new JLabel("Contact number:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(contactField, gbc);
+
+        // address line 1
+        gbc.gridx = 0;
+        gbc.gridy = 9;
+        mainPanel.add(new JLabel("AddressLine 1:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(addressLine1Field, gbc);
+
+        // addressline2
+        gbc.gridx = 0;
+        gbc.gridy = 10;
+        mainPanel.add(new JLabel("AddressLine 2"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(addressLine2Field, gbc);
+
+        // addressline3 ;
+        gbc.gridx=0;
+        gbc.gridy = 11;
+        mainPanel.add(new JLabel("AddressLine 3"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(addressLine3Field, gbc);
+
+        // pincode
+        gbc.gridx = 0;
+        gbc.gridy = 12;
+        mainPanel.add(new JLabel("PinCode:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(pincodeField, gbc);
+
+        // state
+        gbc.gridx = 0;
+        gbc.gridy = 13;
+        mainPanel.add(new JLabel("State:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(stateComboBox, gbc);
+
+        // Blood Group
+//        gbc.gridx = 0;
+//        gbc.gridy = 14;
+//        mainPanel.add(new JLabel("Blood Group:"), gbc);
+//        gbc.gridx = 1;
+//        mainPanel.add(bloodGroupCombo, gbc);
+//
+        
+        JPanel bottomPanel = new JPanel(new FlowLayout());
+        bottomPanel.add(registerButton);
+        bottomPanel.add(viewPatientsButton);
+
+        
+        frame.add(mainPanel, BorderLayout.CENTER);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
+
+        
+        dobChooser.addPropertyChangeListener(e -> {
+            if ("date".equals(e.getPropertyName())) {
+                LocalDate dob = dobChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                int age = Period.between(dob, LocalDate.now()).getYears();
+                ageField.setText(String.valueOf(age));
+            }
+        });
+
+        frame.setVisible(true);
+    }
+    public void resetFields() {
+        firstNameField.setText(""); 
+        lastNameField.setText("");  
+        dobChooser.setDate(new Date());   
+        ageField.setText("");       
+        sexCombo.setSelectedIndex(0); 
+        maritalStatusCombo.setSelectedIndex(0);
+        addressLine1Field.setText("");
+        addressLine2Field.setText(""); 
+        addressLine3Field.setText(""); 
+        pincodeField.setText("");      
+        stateComboBox.setSelectedIndex(0);            
+        emailField.setText("");        
+        bloodGroupCombo.setSelectedIndex(0); 
+        contactField.setText("");      
+    }
+}
