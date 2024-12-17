@@ -1249,6 +1249,96 @@ public class PatientRegistrationController {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(view.frame, "Error: " + ex.getMessage());
         }
+
+private void registerPatient() {
+    try {
+        String firstName = view.firstNameField.getText();
+        String lastName = view.lastNameField.getText();
+        Date dobDate = view.dobChooser.getDate();
+        String sex = (String) view.sexCombo.getSelectedItem();
+        String maritalStatus = (String) view.maritalStatusCombo.getSelectedItem();
+        String addressLine1 = view.addressLine1Field.getText();
+        String addressLine2 = view.addressLine2Field.getText();
+        String addressLine3 = view.addressLine3Field.getText();
+        String pincode = view.pincodeField.getText();
+        String state = (String) view.stateComboBox.getSelectedItem();
+        String fullAddress = String.join(", ", addressLine1, addressLine2, addressLine3, pincode, state).trim();
+        String email = view.emailField.getText();
+        String bloodGroup = (String) view.bloodGroupCombo.getSelectedItem();
+        String contactText = view.contactField.getText().trim();
+
+        // Validation checks
+        if (firstName.isEmpty() || lastName.isEmpty() || dobDate == null || fullAddress.isEmpty()
+                || pincode.isEmpty() || state.isEmpty() || email.isEmpty() || contactText.isEmpty()) {
+            JOptionPane.showMessageDialog(view.frame, "All fields are mandatory!");
+            return;
+        }
+
+        if (!firstName.matches("^[A-Za-z]+$") || !lastName.matches("^[A-Za-z]+$")) {
+            JOptionPane.showMessageDialog(view.frame, "Name fields must contain letters only");
+            return;
+        }
+
+        LocalDate dob = dobDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (dob.isAfter(LocalDate.now())) {
+            JOptionPane.showMessageDialog(view.frame, "Date of birth cannot be in the future");
+            return;
+        }
+
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            JOptionPane.showMessageDialog(view.frame, "Please enter a valid email!");
+            return;
+        }
+
+        if (!contactText.matches("^[6-9][0-9]{9}$")) {
+            JOptionPane.showMessageDialog(view.frame, "Invalid phone number format!");
+            return;
+        }
+
+        if (!pincode.matches("\\d{6}")) {
+            JOptionPane.showMessageDialog(view.frame, "Invalid pincode");
+            return;
+        }
+
+        // Calculate age
+        long contactNumber = Long.parseLong(contactText);
+        LocalDate currentDate = LocalDate.now();
+        Period agePeriod = Period.between(dob, currentDate);
+
+        String ageText;
+        int years = agePeriod.getYears();
+        int months = agePeriod.getMonths();
+
+        if (dob.getYear() == currentDate.getYear()) {
+            // Age in months only if DOB year matches current year
+            ageText = months + " Months";
+            years = 0; // Set years to 0
+        } else {
+            // Age in years and months
+            ageText = years + " Years, " + months + " Months";
+        }
+
+        // Display age in the UI
+        view.ageField.setText(ageText);
+
+        // Create Patient object
+        Patient patient = new Patient(firstName, lastName, dob, years, months, sex, maritalStatus, bloodGroup, email,
+                contactNumber, fullAddress, pincode, state);
+
+        // Save to JSON File
+        List<Patient> patients = jsonHandler.readPatients();
+        patients.add(patient);
+        jsonHandler.savePatients(patients);
+
+        JOptionPane.showMessageDialog(view.frame, "Patient registered successfully!");
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(view.frame, "Error: " + ex.getMessage());
+    }
+
+    // Reset form fields
+    view.resetFields();
+}
+
         view.resetFields();
     }
 
